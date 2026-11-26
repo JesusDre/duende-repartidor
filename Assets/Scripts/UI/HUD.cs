@@ -36,10 +36,10 @@ public class HUD : MonoBehaviour
             AlCambiarRegalo(carrier.TieneRegalo);
         }
         if (textoAviso != null) textoAviso.enabled = false;
-        CrabAI.RegaloRobado += AlRobarRegalo;
+        PenguinAI.RegaloRobado += AlRobarRegalo;
     }
 
-    void AlRobarRegalo(CrabAI cangrejo) => MostrarAviso("¡Un cangrejo te robó el regalo!", 2f);
+    void AlRobarRegalo(PenguinAI pinguino) => MostrarAviso("¡Un pingüino te robó el regalo!", 2f);
 
     void OnDestroy()
     {
@@ -49,7 +49,7 @@ public class HUD : MonoBehaviour
             gm.PartidaTerminada -= AlTerminar;
         }
         if (carrier != null) carrier.CambioRegalo -= AlCambiarRegalo;
-        CrabAI.RegaloRobado -= AlRobarRegalo;
+        PenguinAI.RegaloRobado -= AlRobarRegalo;
     }
 
     void Update()

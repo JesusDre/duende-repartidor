@@ -223,22 +223,24 @@ def modelo_taller():
     exportar("Taller")
 
 
-def modelo_cangrejo():
-    r = raiz("Cangrejo")
-    esfera("Caparazon", "M_Naranja", r, (0, 0, 0.18), 0.22, escala=(1.3, 1.0, 0.55))
-    for lado, x in (("I", -1), ("D", 1)):
-        for i in range(3):
-            pata = cilindro(f"Pata{lado}{i}", "M_Rojo", r, (x * 0.30, -0.1 + i * 0.1, 0.08), 0.02, 0.25, lados=5)
-            pata.rotation_euler = (0, math.radians(60 * x), 0)
-        cilindro(f"BrazoPinza{lado}", "M_Rojo", r, (x * 0.2, -0.25, 0.15), 0.03, 0.2, lados=5,
-                 rot=(math.radians(70), 0, math.radians(-30 * x)))
-        esfera(f"Pinza{lado}", "M_Rojo", r, (x * 0.25, -0.36, 0.18), 0.08, escala=(0.8, 1.2, 0.6))
-        cilindro(f"Antena{lado}", "M_Rojo", r, (x * 0.07, -0.15, 0.32), 0.012, 0.14, lados=4)
-        esfera(f"Ojo{lado}", "M_Negro", r, (x * 0.07, -0.15, 0.40), 0.035)
-    # Gorrito navideño
-    cono("Gorro", "M_Rojo", r, (0, 0.02, 0.43), 0.09, 0.0, 0.2, lados=8)
-    esfera("Borla", "M_Blanco", r, (0, 0.02, 0.54), 0.03)
-    exportar("Cangrejo")
+def modelo_pinguino():
+    """Pingüino con bufanda y gorro navideño; mira hacia -Y (el frente)."""
+    r = raiz("Pinguino")
+    esfera("Cuerpo", "M_Negro", r, (0, 0, 0.42), 0.3, escala=(1.0, 0.9, 1.35))
+    esfera("Panza", "M_Blanco", r, (0, -0.1, 0.38), 0.25, escala=(0.9, 0.7, 1.25))
+    esfera("Cabeza", "M_Negro", r, (0, 0, 0.88), 0.19)
+    esfera("Cara", "M_Blanco", r, (0, -0.08, 0.86), 0.14, escala=(1.0, 0.8, 0.9))
+    cono("Pico", "M_Naranja", r, (0, -0.24, 0.85), 0.05, 0.0, 0.14, lados=4, rot=(math.radians(90), 0, 0))
+    for lado, x in (("I", -0.07), ("D", 0.07)):
+        esfera(f"Ojo{lado}", "M_Negro", r, (x, -0.19, 0.92), 0.025)
+        esfera(f"Aleta{lado}", "M_Negro", r, (x * 4.3, 0, 0.45), 0.08, escala=(0.4, 1.0, 2.4))
+        cubo(f"Pata{lado}", "M_Naranja", r, (x * 1.4, -0.08, 0.02), (0.12, 0.2, 0.04))
+    cilindro("Bufanda", "M_Rojo", r, (0, 0, 0.7), 0.22, 0.07, lados=8)
+    cubo("PuntaBufanda", "M_Rojo", r, (0.12, -0.18, 0.6), (0.07, 0.03, 0.2))
+    cono("Gorro", "M_Rojo", r, (0, 0.02, 1.12), 0.15, 0.0, 0.25, lados=8, rot=(math.radians(-12), 0, 0))
+    cilindro("BordeGorro", "M_Blanco", r, (0, 0, 1.01), 0.155, 0.05, lados=8)
+    esfera("Borla", "M_Blanco", r, (0, 0.06, 1.25), 0.04)
+    exportar("Pinguino")
 
 
 def modelo_pino():
@@ -282,7 +284,7 @@ def modelo_flecha():
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_taller, modelo_cangrejo, modelo_flecha,
+    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_taller, modelo_pinguino, modelo_flecha,
                modelo_pino, modelo_muneco_nieve]
     for modelo in modelos:
         limpiar_escena()

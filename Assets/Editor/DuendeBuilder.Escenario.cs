@@ -117,7 +117,7 @@ public static partial class DuendeBuilder
         CrearZonaTaller(taller);
         var entregas = CrearPuntosDeEntrega(casas);
         CrearFlechaGuia(jugador);
-        CrearCangrejos();
+        CrearPinguinos();
         var gm = CrearGameManager(entregas, jugador, camara);
         ConstruirAmbientacion(mundo, taller, casas, entregas, camara);
         CrearNevada(jugador.transform, new Vector3(0f, 14f, 0f), 46f, 700f);

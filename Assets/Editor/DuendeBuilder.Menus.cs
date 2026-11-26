@@ -178,7 +178,7 @@ public static partial class DuendeBuilder
             "Tú, su duende de confianza, tienes que repartir 8 regalos en el pueblo antes de que amanezca.\n\n" +
             "1. Ve al taller de Santa y toma un regalo.\n" +
             "2. Llévalo a la casa que tiene el haz de luz.\n" +
-            "3. Cuidado con los cangrejos: si te tocan, te roban el regalo.\n\n" +
+            "3. Cuidado con los pingüinos: si te alcanzan, te roban el regalo.\n\n" +
             "WASD mover · Shift correr · Espacio saltar\nMouse cámara · Esc pausa",
             28, Color.white, TextAnchor.UpperLeft, FontStyle.Normal);
         cuerpo.horizontalOverflow = HorizontalWrapMode.Wrap;

@@ -3,11 +3,11 @@ using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
-/// Cangrejo que patrulla la playa. Si ve al duende cargando un regalo lo persigue,
-/// y si lo alcanza le roba el regalo. Camina de lado, como buen cangrejo.
+/// Pingüino que patrulla el pueblo nevado. Si ve al duende cargando un regalo lo persigue,
+/// y si lo alcanza le roba el regalo. Camina bamboleándose de lado a lado.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
-public class CrabAI : MonoBehaviour
+public class PenguinAI : MonoBehaviour
 {
     enum Estado { Patrullar, Perseguir, Huir }
 
@@ -26,8 +26,8 @@ public class CrabAI : MonoBehaviour
     [Header("Animación")]
     [SerializeField] Transform modelo;
 
-    /// <summary>Se dispara cuando cualquier cangrejo roba un regalo.</summary>
-    public static event Action<CrabAI> RegaloRobado;
+    /// <summary>Se dispara cuando cualquier pingüino roba un regalo.</summary>
+    public static event Action<PenguinAI> RegaloRobado;
 
     NavMeshAgent agente;
     Transform jugador;
@@ -141,13 +141,14 @@ public class CrabAI : MonoBehaviour
     void Animar()
     {
         if (modelo == null) return;
-        float v = agente.velocity.magnitude;
-        fase += Time.deltaTime * (4f + v * 5f);
-        float rebote = Mathf.Abs(Mathf.Sin(fase)) * 0.05f * Mathf.Clamp01(v);
+        float v = Mathf.Clamp01(agente.velocity.magnitude / velocidadPatrulla);
+        fase += Time.deltaTime * (estado == Estado.Perseguir ? 16f : 9f) * Mathf.Max(v, 0.15f);
+        // Bamboleo: se inclina de un lado a otro y da saltitos
+        float inclinacion = Mathf.Sin(fase) * 14f * v;
+        float rebote = Mathf.Abs(Mathf.Sin(fase)) * 0.06f * v;
+        float aleteo = estado == Estado.Perseguir ? Mathf.Sin(fase * 2f) * 6f : 0f;
         modelo.localPosition = posModelo + Vector3.up * rebote;
-        // Las pinzas "aplauden" cuando persigue
-        float balanceo = Mathf.Sin(fase * 0.5f) * (estado == Estado.Perseguir ? 12f : 5f);
-        modelo.localRotation = Quaternion.Euler(0f, 90f, balanceo);
+        modelo.localRotation = Quaternion.Euler(aleteo, 0f, inclinacion);
     }
 
     void OnDrawGizmosSelected()

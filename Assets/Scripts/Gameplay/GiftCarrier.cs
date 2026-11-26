@@ -33,7 +33,7 @@ public class GiftCarrier : MonoBehaviour
         return true;
     }
 
-    /// <summary>El regalo se pierde (por ejemplo, si lo roba un cangrejo).</summary>
+    /// <summary>El regalo se pierde (por ejemplo, si lo roba un pingüino).</summary>
     public bool Perder()
     {
         if (!TieneRegalo) return false;

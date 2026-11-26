@@ -182,8 +182,8 @@ public class MenusTests
     }
 }
 
-/// <summary>Pruebas de los cangrejos (issue #11).</summary>
-public class CangrejosTests
+/// <summary>Pruebas de los pingüinos (issues #11 y #16).</summary>
+public class PinguinosTests
 {
     [UnitySetUp]
     public IEnumerator CargarEscena()
@@ -193,43 +193,43 @@ public class CangrejosTests
     }
 
     [UnityTest]
-    public IEnumerator HayTresCangrejosSobreElNavMesh()
+    public IEnumerator HayTresPinguinosSobreElNavMesh()
     {
         yield return new WaitForSeconds(0.5f);
-        var cangrejos = Object.FindObjectsByType<CrabAI>(FindObjectsSortMode.None);
-        Assert.AreEqual(3, cangrejos.Length);
-        foreach (var c in cangrejos)
+        var pinguinos = Object.FindObjectsByType<PenguinAI>(FindObjectsSortMode.None);
+        Assert.AreEqual(3, pinguinos.Length);
+        foreach (var c in pinguinos)
             Assert.IsTrue(c.GetComponent<UnityEngine.AI.NavMeshAgent>().isOnNavMesh, $"{c.name} no está sobre el NavMesh");
     }
 
     [UnityTest]
-    public IEnumerator UnCangrejoRobaElRegaloSiAlcanzaAlDuende()
+    public IEnumerator UnPinguinoRobaElRegaloSiAlcanzaAlDuende()
     {
         var jugador = Object.FindAnyObjectByType<PlayerController>();
         var carrier = Object.FindAnyObjectByType<GiftCarrier>();
-        var cangrejo = Object.FindAnyObjectByType<CrabAI>();
+        var pinguino = Object.FindAnyObjectByType<PenguinAI>();
         bool robado = false;
-        System.Action<CrabAI> alRobar = _ => robado = true;
-        CrabAI.RegaloRobado += alRobar;
+        System.Action<PenguinAI> alRobar = _ => robado = true;
+        PenguinAI.RegaloRobado += alRobar;
 
         carrier.Recoger();
-        jugador.Teletransportar(cangrejo.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
+        jugador.Teletransportar(pinguino.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
         float limite = Time.time + 5f;
         while (carrier.TieneRegalo && Time.time < limite) yield return null;
-        CrabAI.RegaloRobado -= alRobar;
+        PenguinAI.RegaloRobado -= alRobar;
 
-        Assert.IsFalse(carrier.TieneRegalo, "El cangrejo no robó el regalo");
+        Assert.IsFalse(carrier.TieneRegalo, "El pingüino no robó el regalo");
         Assert.IsTrue(robado);
     }
 
     [UnityTest]
-    public IEnumerator UnCangrejoIgnoraAlDuendeSinRegalo()
+    public IEnumerator UnPinguinoIgnoraAlDuendeSinRegalo()
     {
         var jugador = Object.FindAnyObjectByType<PlayerController>();
-        var cangrejo = Object.FindAnyObjectByType<CrabAI>();
-        jugador.Teletransportar(cangrejo.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
+        var pinguino = Object.FindAnyObjectByType<PenguinAI>();
+        jugador.Teletransportar(pinguino.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
         yield return new WaitForSeconds(1f);
         // No debe lanzarse directo hacia el duende a velocidad de persecución
-        Assert.Less(cangrejo.GetComponent<UnityEngine.AI.NavMeshAgent>().speed, 3f);
+        Assert.Less(pinguino.GetComponent<UnityEngine.AI.NavMeshAgent>().speed, 3f);
     }
 }
