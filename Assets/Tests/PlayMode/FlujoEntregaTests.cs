@@ -181,3 +181,55 @@ public class MenusTests
         Assert.Greater(GameManager.Instance.TiempoRestante, 100f);
     }
 }
+
+/// <summary>Pruebas de los cangrejos (issue #11).</summary>
+public class CangrejosTests
+{
+    [UnitySetUp]
+    public IEnumerator CargarEscena()
+    {
+        yield return SceneManager.LoadSceneAsync("Game");
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator HayTresCangrejosSobreElNavMesh()
+    {
+        yield return new WaitForSeconds(0.5f);
+        var cangrejos = Object.FindObjectsByType<CrabAI>(FindObjectsSortMode.None);
+        Assert.AreEqual(3, cangrejos.Length);
+        foreach (var c in cangrejos)
+            Assert.IsTrue(c.GetComponent<UnityEngine.AI.NavMeshAgent>().isOnNavMesh, $"{c.name} no está sobre el NavMesh");
+    }
+
+    [UnityTest]
+    public IEnumerator UnCangrejoRobaElRegaloSiAlcanzaAlDuende()
+    {
+        var jugador = Object.FindAnyObjectByType<PlayerController>();
+        var carrier = Object.FindAnyObjectByType<GiftCarrier>();
+        var cangrejo = Object.FindAnyObjectByType<CrabAI>();
+        bool robado = false;
+        System.Action<CrabAI> alRobar = _ => robado = true;
+        CrabAI.RegaloRobado += alRobar;
+
+        carrier.Recoger();
+        jugador.Teletransportar(cangrejo.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
+        float limite = Time.time + 5f;
+        while (carrier.TieneRegalo && Time.time < limite) yield return null;
+        CrabAI.RegaloRobado -= alRobar;
+
+        Assert.IsFalse(carrier.TieneRegalo, "El cangrejo no robó el regalo");
+        Assert.IsTrue(robado);
+    }
+
+    [UnityTest]
+    public IEnumerator UnCangrejoIgnoraAlDuendeSinRegalo()
+    {
+        var jugador = Object.FindAnyObjectByType<PlayerController>();
+        var cangrejo = Object.FindAnyObjectByType<CrabAI>();
+        jugador.Teletransportar(cangrejo.transform.position + Vector3.right * 3f + Vector3.up * 0.1f, Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        // No debe lanzarse directo hacia el duende a velocidad de persecución
+        Assert.Less(cangrejo.GetComponent<UnityEngine.AI.NavMeshAgent>().speed, 3f);
+    }
+}

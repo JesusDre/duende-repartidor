@@ -100,6 +100,7 @@ public static partial class DuendeBuilder
         var casas = ConstruirCasas(mundo);
         ConstruirPalmeras(mundo);
         ConstruirLimites(mundo);
+        HornearNavMesh(mundo);
 
         var spawn = new GameObject("PlayerSpawn").transform;
         spawn.position = PosTaller + new Vector3(0f, 0.1f, -7f);
@@ -109,6 +110,7 @@ public static partial class DuendeBuilder
         CrearZonaTaller(taller);
         var entregas = CrearPuntosDeEntrega(casas);
         CrearFlechaGuia(jugador);
+        CrearCangrejos();
         var gm = CrearGameManager(entregas, jugador, camara);
 
         var canvas = CrearCanvas("UI");
