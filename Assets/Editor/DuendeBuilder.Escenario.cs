@@ -47,17 +47,13 @@ public static partial class DuendeBuilder
         var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
         if (mat == null)
         {
-            mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            mat = new Material(Shader.Find(ShaderPS1));
             AssetDatabase.CreateAsset(mat, path);
         }
+        mat.shader = Shader.Find(ShaderPS1);
         mat.SetColor("_BaseColor", Colores[nombre]);
-        mat.SetFloat("_Smoothness", nombre == "M_Hielo" ? 0.85f : nombre == "M_Vidrio" ? 0.7f : 0.15f);
-        if (nombre == "M_Vidrio")
-        {
-            mat.EnableKeyword("_EMISSION");
-            mat.SetColor("_EmissionColor", Colores[nombre] * 1.4f);
-            mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
-        }
+        // Las ventanas brillan con luz cálida desde adentro
+        mat.SetColor("_EmissionColor", nombre == "M_Vidrio" ? Colores[nombre] * 1.2f : Color.black);
         EditorUtility.SetDirty(mat);
         return mat;
     }
@@ -151,6 +147,7 @@ public static partial class DuendeBuilder
         cam.fieldOfView = 60f;
         cam.farClipPlane = 400f;
         go.AddComponent<AudioListener>();
+        go.AddComponent<PS1Camera>();
         var tpc = go.AddComponent<ThirdPersonCamera>();
         tpc.Objetivo = jugador.transform;
         // Detrás del jugador, que mira hacia +Z (al taller)
@@ -166,7 +163,7 @@ public static partial class DuendeBuilder
         luna.type = LightType.Directional;
         luna.color = new Color(0.62f, 0.72f, 1f);
         luna.intensity = 0.75f;
-        luna.shadows = LightShadows.Soft;
+        luna.shadows = LightShadows.None; // la PS1 no tenía sombras en tiempo real
         luna.transform.rotation = Quaternion.Euler(38f, -35f, 0f);
         RenderSettings.sun = luna;
 

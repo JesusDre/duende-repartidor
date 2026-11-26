@@ -34,6 +34,7 @@ public static partial class DuendeBuilder
         so.ApplyModifiedPropertiesWithoutUndo();
 
         AgregarRegaloAlJugador(raiz);
+        AgregarSombraBlob(raiz.transform, 0.45f);
 
         var prefab = PrefabUtility.SaveAsPrefabAsset(raiz, PlayerPrefab);
         Object.DestroyImmediate(raiz);

@@ -42,6 +42,8 @@ public static partial class DuendeBuilder
             modelo.transform.SetParent(raiz.transform, false);
             modelo.transform.localScale = Vector3.one * 1.25f;
 
+            AgregarSombraBlob(raiz.transform, 0.4f);
+
             var agente = raiz.AddComponent<NavMeshAgent>();
             agente.radius = 0.4f;
             agente.height = 1.5f;

@@ -143,6 +143,7 @@ public static partial class DuendeBuilder
         cam.transform.position = new Vector3(-0.5f, 1.9f, -6f);
         cam.transform.LookAt(new Vector3(-0.8f, 1.2f, 0f));
         CrearPostProceso(c);
+        cam.AddComponent<PS1Camera>();
         var muneco = Modelo("MunecoNieve");
         muneco.transform.SetPositionAndRotation(new Vector3(-3.2f, 0f, 4f), Quaternion.Euler(0f, 160f, 0f));
         CrearNevada(cam.transform, new Vector3(0f, 10f, 6f), 26f, 260f);

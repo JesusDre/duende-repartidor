@@ -236,11 +236,12 @@ public static partial class DuendeBuilder
         var perfil = AssetDatabase.LoadAssetAtPath<VolumeProfile>(PerfilPostProceso);
         if (perfil != null) return perfil;
         perfil = ScriptableObject.CreateInstance<VolumeProfile>();
+        // Post-proceso moderado: la PS1 no tenía bloom, solo se deja un brillo leve en las luces
         AssetDatabase.CreateAsset(perfil, PerfilPostProceso);
 
         var bloom = perfil.Add<Bloom>(true);
         bloom.threshold.Override(1f);
-        bloom.intensity.Override(1.1f);
+        bloom.intensity.Override(0.55f);
         bloom.scatter.Override(0.65f);
         var vineta = perfil.Add<Vignette>(true);
         vineta.intensity.Override(0.28f);

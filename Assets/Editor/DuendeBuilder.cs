@@ -23,6 +23,7 @@ public static partial class DuendeBuilder
     public static void ConstruirTodo()
     {
         CrearEstructura();
+        ConfigurarPS1();
         PrepararMateriales();
         CrearPrefabJugador();
         ConstruirEscenaGame();
