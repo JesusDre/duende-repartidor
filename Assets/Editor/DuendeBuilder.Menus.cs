@@ -100,17 +100,17 @@ public static partial class DuendeBuilder
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         ConstruirAmbiente();
 
-        // Escenita de fondo: playa con el duende y regalos girando
+        // Escenita de fondo: claro nevado con el duende, un muñeco de nieve y regalos girando
         var isla = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        isla.name = "Arena";
+        isla.name = "Nieve";
         isla.transform.position = new Vector3(0f, -0.5f, 0f);
         isla.transform.localScale = new Vector3(14f, 0.5f, 14f);
-        isla.GetComponent<Renderer>().sharedMaterial = Mat("M_Arena");
+        isla.GetComponent<Renderer>().sharedMaterial = Mat("M_Nieve");
         var mar = GameObject.CreatePrimitive(PrimitiveType.Plane);
         mar.name = "Mar";
         mar.transform.position = new Vector3(0f, -0.35f, 0f);
         mar.transform.localScale = new Vector3(40f, 1f, 40f);
-        mar.GetComponent<Renderer>().sharedMaterial = Mat("M_Agua");
+        mar.GetComponent<Renderer>().sharedMaterial = Mat("M_Hielo");
 
         var duende = Modelo("Duende");
         duende.transform.SetPositionAndRotation(new Vector3(1.2f, 0f, 0f), Quaternion.Euler(0f, 200f, 0f));
@@ -131,8 +131,8 @@ public static partial class DuendeBuilder
         }
         foreach (var p in new[] { new Vector3(4.5f, 0f, 6f), new Vector3(7.5f, 0f, 10f), new Vector3(-9f, 0f, 14f) })
         {
-            var palmera = Modelo("Palmera");
-            palmera.transform.position = p;
+            var pino = Modelo("Pino");
+            pino.transform.position = p;
         }
 
         var cam = new GameObject("Main Camera");
@@ -143,6 +143,9 @@ public static partial class DuendeBuilder
         cam.transform.position = new Vector3(-0.5f, 1.9f, -6f);
         cam.transform.LookAt(new Vector3(-0.8f, 1.2f, 0f));
         CrearPostProceso(c);
+        var muneco = Modelo("MunecoNieve");
+        muneco.transform.SetPositionAndRotation(new Vector3(-3.2f, 0f, 4f), Quaternion.Euler(0f, 160f, 0f));
+        CrearNevada(cam.transform, new Vector3(0f, 10f, 6f), 26f, 260f);
 
         // Interfaz
         var canvas = CrearCanvas("UI");
@@ -156,7 +159,7 @@ public static partial class DuendeBuilder
         borde.effectDistance = new Vector2(4f, -4f);
         var subRt = CrearRect("Subtitulo", canvas.transform, new Vector2(0f, 1f), new Vector2(0f, 1f),
             new Vector2(115f, -215f), new Vector2(900f, 60f));
-        var sub = CrearTexto("Texto", subRt, "Una navidad bajo el sol", 44, Color.white, TextAnchor.MiddleLeft, FontStyle.Italic);
+        var sub = CrearTexto("Texto", subRt, "Santa se enfermó: ¡reparte tú!", 44, Color.white, TextAnchor.MiddleLeft, FontStyle.Italic);
         sub.gameObject.AddComponent<Outline>().effectColor = new Color(0f, 0f, 0f, 0.5f);
 
         var botones = CrearRect("Botones", canvas.transform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
@@ -171,8 +174,8 @@ public static partial class DuendeBuilder
         tInstr.rectTransform.offsetMin = new Vector2(0f, 460f);
         tInstr.rectTransform.offsetMax = new Vector2(0f, -15f);
         var cuerpo = CrearTexto("Cuerpo", instr.transform,
-            "Santa se enfermó y este año la navidad cae en un pueblo de playa.\n" +
-            "Tú, su duende de confianza, tienes que repartir 8 regalos antes de que amanezca.\n\n" +
+            "Es nochebuena, está nevando y Santa amaneció con gripa.\n" +
+            "Tú, su duende de confianza, tienes que repartir 8 regalos en el pueblo antes de que amanezca.\n\n" +
             "1. Ve al taller de Santa y toma un regalo.\n" +
             "2. Llévalo a la casa que tiene el haz de luz.\n" +
             "3. Cuidado con los cangrejos: si te tocan, te roban el regalo.\n\n" +

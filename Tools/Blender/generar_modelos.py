@@ -1,5 +1,5 @@
 """
-Genera los modelos low-poly del juego y los exporta como FBX a Assets/Models.
+Genera los modelos low-poly del juego (pueblo nevado) y los exporta como FBX a Assets/Models.
 
 Uso (desde la raíz del proyecto):
     blender --background --factory-startup --python Tools/Blender/generar_modelos.py
@@ -36,6 +36,8 @@ COLORES = {
     "M_Naranja": (0.95, 0.45, 0.10),
     "M_Azul": (0.15, 0.35, 0.85),
     "M_Vidrio": (0.55, 0.80, 0.95),
+    "M_Nieve": (0.92, 0.95, 1.00),
+    "M_Zanahoria": (1.00, 0.50, 0.05),
 }
 
 
@@ -185,6 +187,8 @@ def modelo_casa():
     cubo("Paredes", "M_Pared", r, (0, 0, 1.5), (3.6, 3.6, 2.6))
     # Techo a dos aguas
     prisma("Techo", "M_Turquesa", r, (0, 0, 2.8), 4.4, 4.4, 1.5)
+    # Capa de nieve sobre la parte alta del techo
+    prisma("NieveTecho", "M_Nieve", r, (0, 0, 3.32), 3.0, 4.6, 1.06)
     cubo("Puerta", "M_Cafe", r, (0, -1.81, 1.1), (0.9, 0.06, 1.8))
     esfera("Perilla", "M_Dorado", r, (0.3, -1.85, 1.1), 0.05)
     for lado, x in (("I", -1.15), ("D", 1.15)):
@@ -196,26 +200,6 @@ def modelo_casa():
     terminar(bpy.context.active_object, "Corona", "M_VerdeOscuro", r)
     esfera("MonoCorona", "M_Rojo", r, (0, -1.9, 2.05), 0.06)
     exportar("Casa")
-
-
-def modelo_palmera():
-    r = raiz("Palmera")
-    alto_seg = 0.7
-    for i in range(6):
-        cilindro(f"Tronco{i}", "M_Madera", r, (0.05 * i, 0, alto_seg * (i + 0.5)), 0.18 - i * 0.015, alto_seg * 0.95, lados=6)
-    copa_z = alto_seg * 6
-    cx = 0.05 * 5
-    for i in range(7):
-        ang = i * (360 / 7)
-        hoja = cono(f"Hoja{i}", "M_Verde", r, (cx, 0, copa_z), 0.35, 0.02, 2.2, lados=4)
-        hoja.scale = (1.0, 0.25, 1.0)
-        hoja.rotation_euler = (math.radians(70), 0, math.radians(ang))
-        # Desplaza la hoja hacia afuera según su dirección
-        hoja.location = (cx + math.sin(math.radians(ang)) * -0.9, math.cos(math.radians(ang)) * 0.9, copa_z - 0.25)
-    for i in range(3):
-        ang = math.radians(i * 120)
-        esfera(f"Coco{i}", "M_Cafe", r, (cx + math.cos(ang) * 0.2, math.sin(ang) * 0.2, copa_z - 0.2), 0.13)
-    exportar("Palmera")
 
 
 def modelo_taller():
@@ -257,6 +241,37 @@ def modelo_cangrejo():
     exportar("Cangrejo")
 
 
+def modelo_pino():
+    """Pino de tres pisos con nieve en las puntas de las ramas."""
+    r = raiz("Pino")
+    cilindro("Tronco", "M_Cafe", r, (0, 0, 0.5), 0.22, 1.0, lados=6)
+    pisos = ((1.0, 1.9, 1.6), (2.1, 1.5, 1.4), (3.1, 1.05, 1.3))  # base, radio, alto
+    for i, (z, radio, alto) in enumerate(pisos):
+        cono(f"Ramas{i}", "M_VerdeOscuro", r, (0, 0, z + alto / 2), radio, 0.0, alto, lados=7)
+        # Anillo de nieve sobre cada piso
+        cono(f"Nieve{i}", "M_Nieve", r, (0, 0, z + alto * 0.55 + 0.08), radio * 0.62, 0.0, alto * 0.42, lados=7)
+    cono("Punta", "M_Nieve", r, (0, 0, 4.25), 0.3, 0.0, 0.5, lados=7)
+    exportar("Pino")
+
+
+def modelo_muneco_nieve():
+    r = raiz("MunecoNieve")
+    esfera("Base", "M_Nieve", r, (0, 0, 0.45), 0.5)
+    esfera("Torso", "M_Nieve", r, (0, 0, 1.15), 0.36)
+    esfera("Cabeza", "M_Nieve", r, (0, 0, 1.68), 0.26)
+    cono("Nariz", "M_Zanahoria", r, (0, -0.36, 1.68), 0.05, 0.0, 0.25, lados=6, rot=(math.radians(90), 0, 0))
+    for lado, x in (("I", -0.09), ("D", 0.09)):
+        esfera(f"Ojo{lado}", "M_Negro", r, (x, -0.23, 1.76), 0.03)
+        cilindro(f"Brazo{lado}", "M_Cafe", r, (x * 5.5, 0, 1.25), 0.025, 0.7, lados=4,
+                 rot=(0, math.radians(60 if x > 0 else -60), 0))
+    for i in range(3):
+        esfera(f"Boton{i}", "M_Negro", r, (0, -0.35, 1.0 + i * 0.13), 0.035)
+    cilindro("Bufanda", "M_Rojo", r, (0, 0, 1.44), 0.27, 0.1, lados=8)
+    cilindro("AlaSombrero", "M_Negro", r, (0, 0, 1.9), 0.3, 0.04, lados=8)
+    cilindro("CopaSombrero", "M_Negro", r, (0, 0, 2.06), 0.2, 0.3, lados=8)
+    exportar("MunecoNieve")
+
+
 def modelo_flecha():
     """Flecha guía que flota frente al duende; la punta mira al frente (-Y)."""
     r = raiz("Flecha")
@@ -267,7 +282,8 @@ def modelo_flecha():
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_palmera, modelo_taller, modelo_cangrejo, modelo_flecha]
+    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_taller, modelo_cangrejo, modelo_flecha,
+               modelo_pino, modelo_muneco_nieve]
     for modelo in modelos:
         limpiar_escena()
         modelo()

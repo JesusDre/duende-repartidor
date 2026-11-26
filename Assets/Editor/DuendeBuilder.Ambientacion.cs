@@ -118,24 +118,67 @@ public static partial class DuendeBuilder
         go.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
     }
 
-    static void DecorarPalmeras(Transform mundo)
+    static void DecorarPinos(Transform mundo)
     {
-        var palmeras = mundo.Find("Palmeras");
-        if (palmeras == null) return;
+        var pinos = mundo.Find("Pinos");
+        if (pinos == null) return;
         int i = 0;
-        foreach (Transform palmera in palmeras)
+        foreach (Transform pino in pinos)
         {
-            if (i++ % 2 == 1) continue; // la mitad de las palmeras lleva luces
+            if (i++ % 2 == 1) continue; // la mitad de los pinos lleva luces
+            // Espiral que sube por el cono del pino
             var puntos = new List<Vector3>();
-            for (int k = 0; k <= 28; k++)
+            for (int k = 0; k <= 40; k++)
             {
-                float t = k / 28f;
-                float ang = t * Mathf.PI * 2f * 3.5f;
-                float r = Mathf.Lerp(0.22f, 0.13f, t);
-                puntos.Add(new Vector3(0.25f * t + Mathf.Cos(ang) * r, 0.4f + t * 3.6f, Mathf.Sin(ang) * r));
+                float t = k / 40f;
+                float ang = t * Mathf.PI * 2f * 3.2f;
+                float r = Mathf.Lerp(1.75f, 0.3f, t);
+                puntos.Add(new Vector3(Mathf.Cos(ang) * r, 1.15f + t * 3.0f, Mathf.Sin(ang) * r));
             }
-            CrearSerie("Luces", palmera, puntos, 0.32f, 0.15f);
+            CrearSerie("Luces", pino, puntos, 0.42f, 0.17f);
         }
+    }
+
+    /// <summary>Nevada con partículas que acompaña al objetivo (jugador o cámara del menú).</summary>
+    public static ParticleSystem CrearNevada(Transform seguir, Vector3 offset, float area, float cantidad)
+    {
+        var go = new GameObject("Nevada");
+        go.transform.position = seguir.position + offset;
+        go.transform.rotation = Quaternion.Euler(90f, 0f, 0f); // emite hacia abajo
+        go.AddComponent<FollowPosition>().Configurar(seguir, offset);
+
+        var ps = go.AddComponent<ParticleSystem>();
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        var main = ps.main;
+        main.loop = true;
+        main.playOnAwake = true;
+        main.prewarm = true;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.startLifetime = 9f;
+        main.startSpeed = new ParticleSystem.MinMaxCurve(1.6f, 2.6f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.07f, 0.16f);
+        main.startColor = new Color(1f, 1f, 1f, 0.9f);
+        main.maxParticles = 4000;
+
+        var emision = ps.emission;
+        emision.rateOverTime = cantidad;
+
+        var forma = ps.shape;
+        forma.shapeType = ParticleSystemShapeType.Box;
+        forma.scale = new Vector3(area, area, 1f);
+
+        // Vaivén suave de los copos
+        var ruido = ps.noise;
+        ruido.enabled = true;
+        ruido.strength = 0.6f;
+        ruido.frequency = 0.25f;
+        ruido.scrollSpeed = 0.2f;
+
+        var r = go.GetComponent<ParticleSystemRenderer>();
+        r.sharedMaterial = MatParticula();
+        r.renderMode = ParticleSystemRenderMode.Billboard;
+        r.shadowCastingMode = ShadowCastingMode.Off;
+        return ps;
     }
 
     static void AgregarConfeti(DeliveryManager entregas)
@@ -226,7 +269,7 @@ public static partial class DuendeBuilder
     {
         foreach (var casa in casas) DecorarCasa(casa);
         DecorarTaller(taller);
-        DecorarPalmeras(mundo);
+        DecorarPinos(mundo);
         AgregarConfeti(entregas);
         CrearPostProceso(camara);
     }

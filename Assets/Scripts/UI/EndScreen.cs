@@ -34,7 +34,7 @@ public class EndScreen : MonoBehaviour
         if (gano)
         {
             int seg = Mathf.CeilToInt(gm.TiempoRestante);
-            detalle.text = $"Repartiste los {gm.Meta} regalos con {seg / 60}:{seg % 60:00} de sobra.\nEl pueblo tendrá una navidad bajo el sol.";
+            detalle.text = $"Repartiste los {gm.Meta} regalos con {seg / 60}:{seg % 60:00} de sobra.\nNadie en el pueblo se quedó sin regalo.";
         }
         else
         {

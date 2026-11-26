@@ -33,10 +33,11 @@ public static partial class DuendeBuilder
         { "M_Rosa", new Color(0.95f, 0.45f, 0.60f) },
         { "M_Naranja", new Color(0.95f, 0.45f, 0.10f) },
         { "M_Azul", new Color(0.15f, 0.35f, 0.85f) },
-        { "M_Vidrio", new Color(0.55f, 0.80f, 0.95f) },
-        { "M_Arena", new Color(0.93f, 0.82f, 0.58f) },
-        { "M_Agua", new Color(0.10f, 0.55f, 0.75f) },
-        { "M_Camino", new Color(0.80f, 0.66f, 0.45f) },
+        { "M_Vidrio", new Color(1.00f, 0.78f, 0.35f) },  // ventanas con luz adentro
+        { "M_Nieve", new Color(0.90f, 0.94f, 1.00f) },
+        { "M_Zanahoria", new Color(1.00f, 0.50f, 0.05f) },
+        { "M_Hielo", new Color(0.45f, 0.65f, 0.85f) },
+        { "M_Camino", new Color(0.66f, 0.70f, 0.82f) },    // nieve pisada
     };
 
     // ------------------------------------------------------------ materiales
@@ -50,7 +51,13 @@ public static partial class DuendeBuilder
             AssetDatabase.CreateAsset(mat, path);
         }
         mat.SetColor("_BaseColor", Colores[nombre]);
-        mat.SetFloat("_Smoothness", nombre == "M_Agua" ? 0.85f : nombre == "M_Vidrio" ? 0.7f : 0.15f);
+        mat.SetFloat("_Smoothness", nombre == "M_Hielo" ? 0.85f : nombre == "M_Vidrio" ? 0.7f : 0.15f);
+        if (nombre == "M_Vidrio")
+        {
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", Colores[nombre] * 1.4f);
+            mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+        }
         EditorUtility.SetDirty(mat);
         return mat;
     }
@@ -98,7 +105,7 @@ public static partial class DuendeBuilder
         ConstruirIsla(mundo);
         var taller = ConstruirTaller(mundo);
         var casas = ConstruirCasas(mundo);
-        ConstruirPalmeras(mundo);
+        ConstruirVegetacion(mundo);
         ConstruirLimites(mundo);
         HornearNavMesh(mundo);
 
@@ -113,6 +120,7 @@ public static partial class DuendeBuilder
         CrearCangrejos();
         var gm = CrearGameManager(entregas, jugador, camara);
         ConstruirAmbientacion(mundo, taller, casas, entregas, camara);
+        CrearNevada(jugador.transform, new Vector3(0f, 14f, 0f), 46f, 700f);
 
         var canvas = CrearCanvas("UI");
         var hud = CrearHUD(canvas.transform);
@@ -153,14 +161,14 @@ public static partial class DuendeBuilder
 
     static void ConstruirAmbiente()
     {
-        // Atardecer tropical: sol bajo y anaranjado, cielo rosado.
-        var sol = new GameObject("Sol").AddComponent<Light>();
-        sol.type = LightType.Directional;
-        sol.color = new Color(1f, 0.78f, 0.55f);
-        sol.intensity = 1.15f;
-        sol.shadows = LightShadows.Soft;
-        sol.transform.rotation = Quaternion.Euler(20f, -35f, 0f);
-        RenderSettings.sun = sol;
+        // Nochebuena nevada: luz de luna azulada y cielo oscuro, para que brillen las luces navideñas.
+        var luna = new GameObject("Luna").AddComponent<Light>();
+        luna.type = LightType.Directional;
+        luna.color = new Color(0.62f, 0.72f, 1f);
+        luna.intensity = 0.75f;
+        luna.shadows = LightShadows.Soft;
+        luna.transform.rotation = Quaternion.Euler(38f, -35f, 0f);
+        RenderSettings.sun = luna;
 
         var cielo = AssetDatabase.LoadAssetAtPath<Material>($"{MaterialsDir}/Cielo.mat");
         if (cielo == null)
@@ -168,21 +176,22 @@ public static partial class DuendeBuilder
             cielo = new Material(Shader.Find("Skybox/Procedural"));
             AssetDatabase.CreateAsset(cielo, $"{MaterialsDir}/Cielo.mat");
         }
-        cielo.SetColor("_SkyTint", new Color(0.55f, 0.45f, 0.60f));
-        cielo.SetColor("_GroundColor", new Color(0.25f, 0.45f, 0.55f));
-        cielo.SetFloat("_AtmosphereThickness", 1.1f);
-        cielo.SetFloat("_Exposure", 1.1f);
+        cielo.SetFloat("_SunDisk", 0f);
+        cielo.SetColor("_SkyTint", new Color(0.25f, 0.30f, 0.55f));
+        cielo.SetColor("_GroundColor", new Color(0.30f, 0.34f, 0.45f));
+        cielo.SetFloat("_AtmosphereThickness", 0.6f);
+        cielo.SetFloat("_Exposure", 0.45f);
         RenderSettings.skybox = cielo;
 
         RenderSettings.ambientMode = AmbientMode.Trilight;
-        RenderSettings.ambientSkyColor = new Color(0.85f, 0.65f, 0.70f);
-        RenderSettings.ambientEquatorColor = new Color(0.65f, 0.55f, 0.50f);
-        RenderSettings.ambientGroundColor = new Color(0.35f, 0.30f, 0.25f);
+        RenderSettings.ambientSkyColor = new Color(0.36f, 0.42f, 0.62f);
+        RenderSettings.ambientEquatorColor = new Color(0.30f, 0.33f, 0.48f);
+        RenderSettings.ambientGroundColor = new Color(0.22f, 0.24f, 0.32f);
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Linear;
-        RenderSettings.fogColor = new Color(0.95f, 0.70f, 0.65f);
-        RenderSettings.fogStartDistance = 70f;
-        RenderSettings.fogEndDistance = 250f;
+        RenderSettings.fogColor = new Color(0.32f, 0.37f, 0.52f);
+        RenderSettings.fogStartDistance = 22f;
+        RenderSettings.fogEndDistance = 95f;
     }
 
     static void ConstruirIsla(Transform mundo)
@@ -192,7 +201,7 @@ public static partial class DuendeBuilder
         isla.transform.SetParent(mundo);
         isla.transform.localScale = new Vector3(RadioIsla * 2f, 0.5f, RadioIsla * 2f);
         isla.transform.position = new Vector3(0f, -0.5f, 0f);
-        isla.GetComponent<Renderer>().sharedMaterial = Mat("M_Arena");
+        isla.GetComponent<Renderer>().sharedMaterial = Mat("M_Nieve");
         isla.isStatic = true;
         // El collider de cilindro es una cápsula; se cambia por una caja plana para caminar bien.
         Object.DestroyImmediate(isla.GetComponent<Collider>());
@@ -200,11 +209,11 @@ public static partial class DuendeBuilder
         piso.size = new Vector3(1f, 2f, 1f);
 
         var mar = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        mar.name = "Mar";
+        mar.name = "LagoCongelado";
         mar.transform.SetParent(mundo);
         mar.transform.position = new Vector3(0f, -0.35f, 0f);
         mar.transform.localScale = new Vector3(60f, 1f, 60f);
-        mar.GetComponent<Renderer>().sharedMaterial = Mat("M_Agua");
+        mar.GetComponent<Renderer>().sharedMaterial = Mat("M_Hielo");
         Object.DestroyImmediate(mar.GetComponent<Collider>());
         mar.isStatic = true;
 
@@ -267,32 +276,65 @@ public static partial class DuendeBuilder
         return casas;
     }
 
-    static void ConstruirPalmeras(Transform mundo)
+    static void ConstruirVegetacion(Transform mundo)
     {
-        var padre = new GameObject("Palmeras").transform;
-        padre.SetParent(mundo);
+        var pinos = new GameObject("Pinos").transform;
+        pinos.SetParent(mundo);
+        var munecos = new GameObject("MunecosDeNieve").transform;
+        munecos.SetParent(mundo);
         var rnd = new System.Random(2512);
-        int colocadas = 0, intentos = 0;
-        while (colocadas < 28 && intentos++ < 1000)
-        {
-            float ang = (float)rnd.NextDouble() * 360f;
-            float r = 9f + (float)rnd.NextDouble() * (RadioIsla - 12f);
-            var pos = Quaternion.Euler(0f, ang, 0f) * Vector3.forward * r;
-            if (LejosDeEdificios(pos) == false) continue;
+        var ocupados = new List<Vector3>();
 
-            var palmera = Modelo("Palmera");
-            palmera.name = $"Palmera_{++colocadas}";
-            palmera.transform.SetParent(padre);
-            palmera.transform.position = pos;
-            palmera.transform.rotation = Quaternion.Euler(0f, (float)rnd.NextDouble() * 360f, 0f);
-            float s = 0.8f + (float)rnd.NextDouble() * 0.5f;
-            palmera.transform.localScale = Vector3.one * s;
-            var col = palmera.AddComponent<CapsuleCollider>();
-            col.radius = 0.25f;
+        int colocados = 0, intentos = 0;
+        while (colocados < 34 && intentos++ < 2000)
+        {
+            var pos = PuntoLibre(rnd, ocupados, 2.8f);
+            if (pos == null) continue;
+            var pino = Modelo("Pino");
+            pino.name = $"Pino_{++colocados}";
+            pino.transform.SetParent(pinos);
+            pino.transform.position = pos.Value;
+            pino.transform.rotation = Quaternion.Euler(0f, (float)rnd.NextDouble() * 360f, 0f);
+            pino.transform.localScale = Vector3.one * (0.8f + (float)rnd.NextDouble() * 0.6f);
+            var col = pino.AddComponent<CapsuleCollider>();
+            col.radius = 0.7f;
             col.height = 4f;
-            col.center = new Vector3(0.1f, 2f, 0f);
-            MarcarEstatico(palmera);
+            col.center = new Vector3(0f, 2f, 0f);
+            MarcarEstatico(pino);
+            ocupados.Add(pos.Value);
         }
+
+        colocados = 0;
+        intentos = 0;
+        while (colocados < 6 && intentos++ < 2000)
+        {
+            var pos = PuntoLibre(rnd, ocupados, 2.5f);
+            if (pos == null) continue;
+            var muneco = Modelo("MunecoNieve");
+            muneco.name = $"MunecoNieve_{++colocados}";
+            muneco.transform.SetParent(munecos);
+            muneco.transform.position = pos.Value;
+            // Miran más o menos hacia el taller
+            muneco.transform.rotation = Quaternion.LookRotation(-pos.Value.normalized) *
+                                        Quaternion.Euler(0f, ((float)rnd.NextDouble() - 0.5f) * 60f, 0f);
+            var col = muneco.AddComponent<CapsuleCollider>();
+            col.radius = 0.5f;
+            col.height = 2f;
+            col.center = new Vector3(0f, 1f, 0f);
+            MarcarEstatico(muneco);
+            ocupados.Add(pos.Value);
+        }
+    }
+
+    static Vector3? PuntoLibre(System.Random rnd, List<Vector3> ocupados, float separacion)
+    {
+        float ang = (float)rnd.NextDouble() * 360f;
+        float r = 9f + (float)rnd.NextDouble() * (RadioIsla - 12f);
+        var pos = Quaternion.Euler(0f, ang, 0f) * Vector3.forward * r;
+        if (!LejosDeEdificios(pos)) return null;
+        foreach (var o in ocupados)
+            if (Vector3.Distance(o, pos) < separacion) return null;
+        return pos;
     }
 
     static bool LejosDeEdificios(Vector3 pos)
