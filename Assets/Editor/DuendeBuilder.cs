@@ -24,6 +24,7 @@ public static partial class DuendeBuilder
     {
         CrearEstructura();
         PrepararMateriales();
+        CrearPrefabJugador();
         ConstruirEscenaGame();
         VerificarOrientacionModelos();
     }

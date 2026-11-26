@@ -104,8 +104,24 @@ public static partial class DuendeBuilder
         var spawn = new GameObject("PlayerSpawn").transform;
         spawn.position = PosTaller + new Vector3(0f, 0.1f, -7f);
 
+        var jugador = ColocarJugador(spawn);
+        CrearCamara(jugador);
+
         EditorSceneManager.SaveScene(scene, GameScene);
         Debug.Log("[DuendeBuilder] Escena Game construida.");
+    }
+
+    static Camera CrearCamara(GameObject jugador)
+    {
+        var go = new GameObject("Main Camera");
+        go.tag = "MainCamera";
+        var cam = go.AddComponent<Camera>();
+        cam.fieldOfView = 60f;
+        cam.farClipPlane = 400f;
+        go.AddComponent<AudioListener>();
+        go.transform.position = jugador.transform.position + new Vector3(0f, 2.6f, 4.5f);
+        go.transform.LookAt(jugador.transform.position + Vector3.up * 1.2f);
+        return cam;
     }
 
     static void ConstruirAmbiente()
