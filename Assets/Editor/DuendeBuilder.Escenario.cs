@@ -119,7 +119,10 @@ public static partial class DuendeBuilder
         cam.fieldOfView = 60f;
         cam.farClipPlane = 400f;
         go.AddComponent<AudioListener>();
-        go.transform.position = jugador.transform.position + new Vector3(0f, 2.6f, 4.5f);
+        var tpc = go.AddComponent<ThirdPersonCamera>();
+        tpc.Objetivo = jugador.transform;
+        // Detrás del jugador, que mira hacia -Z
+        go.transform.position = jugador.transform.position + new Vector3(0f, 2.9f, 5.2f);
         go.transform.LookAt(jugador.transform.position + Vector3.up * 1.2f);
         return cam;
     }
