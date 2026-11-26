@@ -81,4 +81,61 @@ public static partial class DuendeBuilder
         so.ApplyModifiedPropertiesWithoutUndo();
         return ws;
     }
+
+    // ---------------------------------------------------------------- #7
+    static DeliveryManager CrearPuntosDeEntrega(System.Collections.Generic.List<Transform> casas)
+    {
+        var matZona = MatBrillo("M_ZonaEntrega", new Color(0.3f, 1f, 0.5f, 0.45f));
+        var matHaz = MatBrillo("M_HazEntrega", new Color(1f, 0.9f, 0.35f, 0.22f));
+        var manager = new GameObject("Entregas").AddComponent<DeliveryManager>();
+        var lista = new SerializedObject(manager).FindProperty("casas");
+
+        for (int i = 0; i < casas.Count; i++)
+        {
+            var punto = new GameObject("PuntoEntrega");
+            punto.transform.SetParent(casas[i], false);
+            punto.transform.localPosition = new Vector3(0f, 0f, 2.9f); // frente a la puerta
+            var col = punto.AddComponent<BoxCollider>();
+            col.isTrigger = true;
+            col.center = new Vector3(0f, 1f, 0f);
+            col.size = new Vector3(2.6f, 2f, 1.8f);
+
+            var indicadores = new GameObject("Indicadores");
+            indicadores.transform.SetParent(punto.transform, false);
+            CrearDisco("Zona", indicadores.transform, new Vector3(0f, 0.03f, 0f), 1.3f, matZona);
+            var haz = CrearDisco("Haz", indicadores.transform, new Vector3(0f, 15f, 0f), 0.7f, matHaz);
+            haz.transform.localScale = new Vector3(1.4f, 15f, 1.4f);
+
+            var luz = new GameObject("Luz").AddComponent<Light>();
+            luz.transform.SetParent(punto.transform, false);
+            luz.transform.localPosition = new Vector3(0f, 2.5f, 0f);
+            luz.type = LightType.Point;
+            luz.color = new Color(1f, 0.85f, 0.4f);
+            luz.range = 9f;
+            luz.intensity = 4f;
+
+            var casa = punto.AddComponent<DeliveryHouse>();
+            var so = new SerializedObject(casa);
+            so.FindProperty("indicadores").objectReferenceValue = indicadores;
+            so.FindProperty("luz").objectReferenceValue = luz;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            lista.arraySize = i + 1;
+            lista.GetArrayElementAtIndex(i).objectReferenceValue = casa;
+        }
+        lista.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        return manager;
+    }
+
+    static void CrearFlechaGuia(GameObject jugador)
+    {
+        var flecha = Modelo("Flecha");
+        flecha.name = "FlechaGuia";
+        foreach (var r in flecha.GetComponentsInChildren<Renderer>())
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        var guia = flecha.AddComponent<GuideArrow>();
+        var so = new SerializedObject(guia);
+        so.FindProperty("jugador").objectReferenceValue = jugador.transform;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
 }

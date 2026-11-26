@@ -106,6 +106,8 @@ public static partial class DuendeBuilder
 
         var jugador = ColocarJugador(spawn);
         CrearZonaTaller(taller);
+        CrearPuntosDeEntrega(casas);
+        CrearFlechaGuia(jugador);
         CrearCamara(jugador);
 
         EditorSceneManager.SaveScene(scene, GameScene);

@@ -612,7 +612,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0cce97a538f676d2afc1577c1ce0c62, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  m_EditorClassIdentifier: Duende::PlayerController
   velocidad: 6
   velocidadCorrer: 9
   aceleracion: 12
@@ -634,7 +634,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4964e37d008047e03a4d0d5731396226, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GiftCarrier
+  m_EditorClassIdentifier: Duende::GiftCarrier
   regaloVisual: {fileID: 7854066690802832330}
 --- !u!1 &3373719753196949361
 GameObject:

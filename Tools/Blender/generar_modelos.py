@@ -257,9 +257,17 @@ def modelo_cangrejo():
     exportar("Cangrejo")
 
 
+def modelo_flecha():
+    """Flecha guía que flota frente al duende; la punta mira al frente (-Y)."""
+    r = raiz("Flecha")
+    cono("Punta", "M_Dorado", r, (0, -0.25, 0), 0.22, 0.0, 0.3, lados=4, rot=(math.radians(90), 0, 0))
+    cubo("Cola", "M_Dorado", r, (0, 0.05, 0), (0.12, 0.35, 0.08))
+    exportar("Flecha")
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_palmera, modelo_taller, modelo_cangrejo]
+    modelos = [modelo_duende, modelo_regalo, modelo_casa, modelo_palmera, modelo_taller, modelo_cangrejo, modelo_flecha]
     for modelo in modelos:
         limpiar_escena()
         modelo()
