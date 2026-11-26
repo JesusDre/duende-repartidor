@@ -7,7 +7,7 @@ using UnityEngine;
 /// Herramientas de editor que generan la estructura y las escenas del juego.
 /// Se pueden usar desde el menú "Duende" o en modo batch con -executeMethod DuendeBuilder.ConstruirTodo.
 /// </summary>
-public static class DuendeBuilder
+public static partial class DuendeBuilder
 {
     public const string ScenesDir = "Assets/Scenes";
     public const string MainMenuScene = ScenesDir + "/MainMenu.unity";
@@ -23,6 +23,17 @@ public static class DuendeBuilder
     public static void ConstruirTodo()
     {
         CrearEstructura();
+        PrepararMateriales();
+        ConstruirEscenaGame();
+        VerificarOrientacionModelos();
+    }
+
+    /// <summary>Comprueba que el frente de los modelos (la nariz del duende) mire hacia +Z.</summary>
+    static void VerificarOrientacionModelos()
+    {
+        var duende = AssetDatabase.LoadAssetAtPath<GameObject>(ModelsDir + "/Duende.fbx");
+        var nariz = duende.transform.Find("Nariz");
+        Debug.Log($"[DuendeBuilder] Nariz del duende en {nariz.position} (z > 0 significa que mira a +Z)");
     }
 
     [MenuItem("Duende/1. Crear estructura y escenas base")]

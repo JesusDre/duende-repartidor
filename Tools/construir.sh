@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenera estructura y escenas del juego en modo batch (con el Editor cerrado).
+# Regenera estructura, materiales y escenas del juego en modo batch (con el Editor cerrado).
 # Uso: Tools/construir.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
