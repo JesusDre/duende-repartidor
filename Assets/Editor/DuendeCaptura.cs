@@ -23,6 +23,21 @@ public static class DuendeCaptura
         var spawn = GameObject.Find("PlayerSpawn");
         var origen = spawn != null ? spawn.transform.position : Vector3.zero;
 
+        // Deja la escena como se ve al jugar: sin aviso, sin regalo cargado y con una sola casa destino.
+        var aviso = GameObject.Find("Aviso");
+        if (aviso != null) aviso.SetActive(false);
+        var regalo = GameObject.Find("RegaloCargado");
+        if (regalo != null) regalo.SetActive(false);
+        bool primera = true;
+        foreach (var casa in Object.FindObjectsByType<DeliveryHouse>(FindObjectsSortMode.InstanceID))
+        {
+            var ind = casa.transform.Find("Indicadores");
+            var luz = casa.transform.Find("Luz");
+            if (ind != null) ind.gameObject.SetActive(primera);
+            if (luz != null) luz.gameObject.SetActive(primera);
+            primera = false;
+        }
+
         // El primer render en modo batch sale sin iluminar; se descarta.
         Tomar(Path.Combine(carpeta, "calentamiento.png"), Vector3.up * 10f, Vector3.zero, 60f);
         File.Delete(Path.Combine(carpeta, "calentamiento.png"));
