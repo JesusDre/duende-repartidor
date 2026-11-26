@@ -112,7 +112,9 @@ public static partial class DuendeBuilder
         var gm = CrearGameManager(entregas, jugador, camara);
 
         var canvas = CrearCanvas("UI");
-        CrearHUD(canvas.transform);
+        var hud = CrearHUD(canvas.transform);
+        CrearPantallaFinal(canvas.transform, hud.gameObject);
+        CrearPausa(canvas.transform, jugador, camara);
         CrearEventSystem();
 
         EditorSceneManager.SaveScene(scene, GameScene);

@@ -30,6 +30,21 @@ public static class DuendeCaptura
         Tomar(Path.Combine(carpeta, "vista_jugador.png"), origen + new Vector3(0f, 2.6f, -4.5f), origen + Vector3.up * 1.2f, 60f);
         Tomar(Path.Combine(carpeta, "vista_casa.png"), new Vector3(-6f, 3f, 12f),
             DuendeBuilder.DireccionCasa(0) * DuendeBuilder.RadioCasas + Vector3.up * 1.5f, 55f);
+        // Pantalla final (se activa solo en memoria)
+        var final = Object.FindAnyObjectByType<EndScreen>();
+        if (final != null)
+        {
+            final.transform.Find("Panel").gameObject.SetActive(true);
+            Tomar(Path.Combine(carpeta, "pantalla_final.png"), origen + new Vector3(0f, 2.6f, -4.5f), origen + Vector3.up * 1.2f, 60f);
+        }
+
+        // Menú principal desde su propia cámara
+        EditorSceneManager.OpenScene(DuendeBuilder.MainMenuScene, OpenSceneMode.Single);
+        var camMenu = Camera.main;
+        camMenu.gameObject.SetActive(false);
+        Tomar(Path.Combine(carpeta, "menu.png"), camMenu.transform.position,
+            camMenu.transform.position + camMenu.transform.forward, camMenu.fieldOfView);
+
         Debug.Log($"[DuendeCaptura] Capturas guardadas en {Path.GetFullPath(carpeta)}");
     }
 

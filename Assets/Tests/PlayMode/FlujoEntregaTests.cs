@@ -135,3 +135,49 @@ public class GameManagerTests
         Assert.AreEqual(GameManager.Estado.Victoria, gm.EstadoActual);
     }
 }
+
+/// <summary>Pruebas de menús (issue #10).</summary>
+public class MenusTests
+{
+    [UnityTest]
+    public IEnumerator JugarDesdeElMenuCargaElJuego()
+    {
+        yield return SceneManager.LoadSceneAsync("MainMenu");
+        yield return null;
+        Object.FindAnyObjectByType<MainMenu>().Jugar();
+        yield return null;
+        yield return null;
+        Assert.AreEqual("Game", SceneManager.GetActiveScene().name);
+    }
+
+    [UnityTest]
+    public IEnumerator PausaCongelaYContinuarReanuda()
+    {
+        yield return SceneManager.LoadSceneAsync("Game");
+        yield return null;
+        var pausa = Object.FindAnyObjectByType<PauseMenu>();
+        pausa.Pausar();
+        Assert.AreEqual(0f, Time.timeScale);
+        Assert.IsFalse(Object.FindAnyObjectByType<PlayerController>().PuedeMoverse);
+        pausa.Continuar();
+        Assert.AreEqual(1f, Time.timeScale);
+        Assert.IsTrue(Object.FindAnyObjectByType<PlayerController>().PuedeMoverse);
+    }
+
+    [UnityTest]
+    public IEnumerator AlPerderSeMuestraLaPantallaFinalYReintentarReinicia()
+    {
+        yield return SceneManager.LoadSceneAsync("Game");
+        yield return null;
+        GameManager.Instance.FijarTiempoRestante(0.01f);
+        yield return null;
+        yield return null;
+        var final = Object.FindAnyObjectByType<EndScreen>();
+        Assert.IsTrue(final.transform.Find("Panel").gameObject.activeSelf, "No apareció la pantalla final");
+        final.Reintentar();
+        yield return null;
+        yield return null;
+        Assert.AreEqual(GameManager.Estado.Jugando, GameManager.Instance.EstadoActual);
+        Assert.Greater(GameManager.Instance.TiempoRestante, 100f);
+    }
+}
