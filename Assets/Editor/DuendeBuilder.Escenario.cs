@@ -105,13 +105,25 @@ public static partial class DuendeBuilder
         spawn.position = PosTaller + new Vector3(0f, 0.1f, -7f);
 
         var jugador = ColocarJugador(spawn);
+        var camara = CrearCamara(jugador);
         CrearZonaTaller(taller);
-        CrearPuntosDeEntrega(casas);
+        var entregas = CrearPuntosDeEntrega(casas);
         CrearFlechaGuia(jugador);
-        CrearCamara(jugador);
+        var gm = CrearGameManager(entregas, jugador, camara);
 
         EditorSceneManager.SaveScene(scene, GameScene);
         Debug.Log("[DuendeBuilder] Escena Game construida.");
+    }
+
+    static GameManager CrearGameManager(DeliveryManager entregas, GameObject jugador, Camera camara)
+    {
+        var gm = new GameObject("GameManager").AddComponent<GameManager>();
+        var so = new SerializedObject(gm);
+        so.FindProperty("entregas").objectReferenceValue = entregas;
+        so.FindProperty("jugador").objectReferenceValue = jugador.GetComponent<PlayerController>();
+        so.FindProperty("camara").objectReferenceValue = camara.GetComponent<ThirdPersonCamera>();
+        so.ApplyModifiedPropertiesWithoutUndo();
+        return gm;
     }
 
     static Camera CrearCamara(GameObject jugador)
