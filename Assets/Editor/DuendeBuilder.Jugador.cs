@@ -44,8 +44,8 @@ public static partial class DuendeBuilder
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefab) ?? CrearPrefabJugador();
         var jugador = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-        // Mira hacia afuera del taller, de espaldas al portón
-        jugador.transform.SetPositionAndRotation(spawn.position, Quaternion.LookRotation(Vector3.back));
+        // Empieza mirando hacia el portón del taller
+        jugador.transform.SetPositionAndRotation(spawn.position, Quaternion.LookRotation(Vector3.forward));
         return jugador;
     }
 }

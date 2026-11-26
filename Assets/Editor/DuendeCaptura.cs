@@ -43,9 +43,19 @@ public static class DuendeCaptura
         cam.farClipPlane = 500f;
         cam.clearFlags = CameraClearFlags.Skybox;
 
+        // Los canvas en modo Overlay no salen en Camera.Render: se pasan a modo cámara solo para la captura.
+        foreach (var canvas in Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+        {
+            if (!canvas.isRootCanvas || !canvas.gameObject.activeInHierarchy) continue;
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = 1f;
+        }
+
         const int w = 1280, h = 720;
         var rt = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32);
         cam.targetTexture = rt;
+        Canvas.ForceUpdateCanvases();
         cam.Render();
         RenderTexture.active = rt;
         var tex = new Texture2D(w, h, TextureFormat.RGB24, false);

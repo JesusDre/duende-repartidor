@@ -111,6 +111,10 @@ public static partial class DuendeBuilder
         CrearFlechaGuia(jugador);
         var gm = CrearGameManager(entregas, jugador, camara);
 
+        var canvas = CrearCanvas("UI");
+        CrearHUD(canvas.transform);
+        CrearEventSystem();
+
         EditorSceneManager.SaveScene(scene, GameScene);
         Debug.Log("[DuendeBuilder] Escena Game construida.");
     }
@@ -136,8 +140,8 @@ public static partial class DuendeBuilder
         go.AddComponent<AudioListener>();
         var tpc = go.AddComponent<ThirdPersonCamera>();
         tpc.Objetivo = jugador.transform;
-        // Detrás del jugador, que mira hacia -Z
-        go.transform.position = jugador.transform.position + new Vector3(0f, 2.9f, 5.2f);
+        // Detrás del jugador, que mira hacia +Z (al taller)
+        go.transform.position = jugador.transform.position + new Vector3(0f, 2.9f, -5.2f);
         go.transform.LookAt(jugador.transform.position + Vector3.up * 1.2f);
         return cam;
     }
