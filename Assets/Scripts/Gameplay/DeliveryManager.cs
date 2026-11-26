@@ -28,6 +28,7 @@ public class DeliveryManager : MonoBehaviour
     {
         if (!enabled || casa != Destino || !carrier.Entregar()) return;
         Entregados++;
+        casa.Celebrar();
         RegaloEntregado?.Invoke(Entregados);
         ElegirNuevoDestino();
     }

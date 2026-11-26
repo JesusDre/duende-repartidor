@@ -112,6 +112,7 @@ public static partial class DuendeBuilder
         CrearFlechaGuia(jugador);
         CrearCangrejos();
         var gm = CrearGameManager(entregas, jugador, camara);
+        ConstruirAmbientacion(mundo, taller, casas, entregas, camara);
 
         var canvas = CrearCanvas("UI");
         var hud = CrearHUD(canvas.transform);
@@ -156,9 +157,9 @@ public static partial class DuendeBuilder
         var sol = new GameObject("Sol").AddComponent<Light>();
         sol.type = LightType.Directional;
         sol.color = new Color(1f, 0.78f, 0.55f);
-        sol.intensity = 1.3f;
+        sol.intensity = 1.15f;
         sol.shadows = LightShadows.Soft;
-        sol.transform.rotation = Quaternion.Euler(28f, -35f, 0f);
+        sol.transform.rotation = Quaternion.Euler(20f, -35f, 0f);
         RenderSettings.sun = sol;
 
         var cielo = AssetDatabase.LoadAssetAtPath<Material>($"{MaterialsDir}/Cielo.mat");

@@ -55,6 +55,7 @@ public static partial class DuendeBuilder
         visual.transform.localScale = Vector3.one * 1.1f;
         foreach (var r in visual.GetComponentsInChildren<Renderer>())
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        visual.AddComponent<Spinner>();
 
         var carrier = jugador.AddComponent<GiftCarrier>();
         var so = new SerializedObject(carrier);

@@ -1956,6 +1956,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8125102832633233938}
+  - component: {fileID: 3195742899606477381}
   m_Layer: 0
   m_Name: RegaloCargado
   m_TagString: Untagged
@@ -1983,6 +1984,22 @@ Transform:
   - {fileID: 4669242714191083588}
   m_Father: {fileID: 529680487981571950}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3195742899606477381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7854066690802832330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0d05b4fe39d07b48b177c612452538a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Duende::Spinner
+  gradosPorSegundo: 90
+  alturaFlotar: 0.1
+  velocidadFlotar: 2.5
+  tiempoReal: 0
 --- !u!1 &7866476019013104196
 GameObject:
   m_ObjectHideFlags: 0

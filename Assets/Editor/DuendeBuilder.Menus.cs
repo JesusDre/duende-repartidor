@@ -142,6 +142,7 @@ public static partial class DuendeBuilder
         cam.AddComponent<AudioListener>();
         cam.transform.position = new Vector3(-0.5f, 1.9f, -6f);
         cam.transform.LookAt(new Vector3(-0.8f, 1.2f, 0f));
+        CrearPostProceso(c);
 
         // Interfaz
         var canvas = CrearCanvas("UI");
