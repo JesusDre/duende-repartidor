@@ -105,6 +105,7 @@ public static partial class DuendeBuilder
         spawn.position = PosTaller + new Vector3(0f, 0.1f, -7f);
 
         var jugador = ColocarJugador(spawn);
+        CrearZonaTaller(taller);
         CrearCamara(jugador);
 
         EditorSceneManager.SaveScene(scene, GameScene);

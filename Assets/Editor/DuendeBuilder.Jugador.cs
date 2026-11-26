@@ -33,6 +33,8 @@ public static partial class DuendeBuilder
         so.FindProperty("modelo").objectReferenceValue = modelo.transform;
         so.ApplyModifiedPropertiesWithoutUndo();
 
+        AgregarRegaloAlJugador(raiz);
+
         var prefab = PrefabUtility.SaveAsPrefabAsset(raiz, PlayerPrefab);
         Object.DestroyImmediate(raiz);
         return prefab;
